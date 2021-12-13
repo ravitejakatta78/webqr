@@ -10,7 +10,7 @@ if(isset($_REQUEST['prepayarr'])){
  }
 extract($_REQUEST);
 //echo "<pre>";print_r($_REQUEST);exit;
-$sqltable = sqlquery('select *  from tablename where ID = \''.$tableid.'\'');
+$sqltable = sqlquery('select tb.*,section_name  from tablename tb left join sections s on s.ID = tb.section_id  where tb.ID = \''.$tableid.'\'');
 $sqlmerchant = sqlquery('select *  from merchant where ID = \''.$merchantid.'\'');
 if(!empty($sqltable[0]['current_order_id']) && $sqlmerchant[0]['table_occupy_status'] == 1)
 								{ ?>
@@ -61,7 +61,8 @@ insertquery('update tablename set table_status = \'1\' , current_order_id = \''.
 												$smessage = 'New order received please check the app for information.';
 												$simage = '';
 												foreach($serviceboyarray as $serviceboy){
-												    $notificationdet = ['type' => 'NEW_ORDER','orderamount' => $grand_total_cart,'username' => $userdetails[0]['name']];
+												    $notificationdet = ['type' => 'NEW_ORDER','orderamount' => $grand_total_cart,'username' => $userdetails[0]['name']
+													,'tablename' => $sqltable[0]['section_name']];
 													sendPilotFCM($serviceboy['push_id'],$stitle,$smessage,$simage,'6',null,$ordetInserId,$notificationdet); 
 												}
 											}
